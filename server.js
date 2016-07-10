@@ -1,5 +1,6 @@
 var fs = require('fs');
 var https = require('https');
+var compression = require('compression');
 var express = require('express');
 var helmet = require('helmet');
 var Moonboots = require('moonboots');
@@ -11,13 +12,13 @@ var async = require('async');
 
 var app = express();
 
-app.use(express.compress());
+app.use(compression());
 app.use(express.static(__dirname + '/public'));
 if (!config.isDev) {
     app.use(helmet.xframe());
 }
-app.use(helmet.iexss());
-app.use(helmet.contentTypeOptions());
+//app.use(helmet.iexss());
+//app.use(helmet.contentTypeOptions());
 
 oembed.EMBEDLY_URL = config.embedly.url || 'https://api.embed.ly/1/oembed';
 oembed.EMBEDLY_KEY = config.embedly.key;
@@ -68,7 +69,10 @@ clientApp.on('ready', function () {
     });
 
     // serves app on every other url
-    app.get('*', clientApp.html());
+    //app.get('*', clientApp.htmlSource());
+	app.get('*', function (req, res) {
+		res.send(clientApp.htmlSource());
+	});
 });
 
 var webappManifest = fs.readFileSync('./public/x-manifest.webapp');
