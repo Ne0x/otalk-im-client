@@ -48,6 +48,7 @@ if (config.isDev) {
         var clientFolder = __dirname + '/clientapp';
         templatizer(clientFolder + '/templates', clientFolder + '/templates.js');
     };
+	app.locals.pretty = true;
 }
 
 clientApp.on('ready', function () {
